@@ -7,7 +7,7 @@ from setuptools import setup
 
 def get_version() -> str:
     """Get current package version."""
-    return os.environ.get('PACKAGE_VERSION', 'dev')
+    return os.environ.get('PACKAGE_VERSION', '0.0.0')
 
 
 def get_long_description() -> str:

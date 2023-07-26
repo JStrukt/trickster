@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "trickster"
+version = "2.0.3"
+description = "Trickster is a Python/Flask application for mocking REST APIs"
+authors = ["Jakub Tesarek <jakub@tesarek.me>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<4.0"
+click = "^8.1.6"
+gunicorn = "^21.2.0"
+Flask = "^2.3.2"
+fastjsonschema = "^2.17.1"
+basicauth = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+setuptools = "^68.0.0"
+wheel = "^0.40.0"
+flake8 = "^6.0.0"
+flake8-pytest = "^1.4"
+flake8-eradicate = "^1.5.0"
+flake8-print = "^5.0.0"
+flake8-todo = "^0.7"
+flake8-import-order = "^0.18.2"
+pytest = "^7.4.0"
+pytest-repeat = "^0.9.1"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.11.1"
+mypy = "0.910"
+twine = "^4.0.2"
+nox = "^2023.4.22"
+nox-poetry = "^1.0.3"
+black = "^23.7.0"
+
+[tool.poetry.scripts]
+trickster = 'trickster.cli:cli'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -35,5 +35,4 @@ def lint(session: Session) -> None:
     args = [str(arg) for arg in args]
     session.install("flake8")
     session.install("flake8-import-order")
-    # session.run("flake8", "--import-order-style", "google")
     session.run("flake8", "--import-order-style", "google", *args)

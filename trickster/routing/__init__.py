@@ -8,7 +8,6 @@ import time
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 import flask
-
 from trickster import TricksterException
 
 

@@ -3,15 +3,14 @@
 from __future__ import annotations
 
 from flask import (
-    Blueprint,
-    Response,
     abort,
+    Blueprint,
     current_app,
     jsonify,
     make_response,
     request,
+    Response,
 )
-
 from trickster.routing import RouteConfigurationError
 from trickster.routing.input import IncomingTestRequest
 from trickster.validation import request_schema

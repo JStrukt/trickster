@@ -5,11 +5,9 @@ from __future__ import annotations
 from typing import Any, Optional, Tuple
 
 from flask import Flask, jsonify
-
 from trickster.config import Config
 from trickster.endpoints import external, internal, utility
 from trickster.routing.router import Router
-
 from werkzeug.exceptions import HTTPException
 
 

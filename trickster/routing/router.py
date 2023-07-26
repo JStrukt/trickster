@@ -5,8 +5,8 @@ from __future__ import annotations
 import enum
 import random
 import re
-import uuid
 from typing import Any, Dict, Iterable, List, Optional
+import uuid
 
 from trickster.collections import IdItem, IdList
 from trickster.routing import Delay, DuplicateRouteError, MissingRouteError, Response

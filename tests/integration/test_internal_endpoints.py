@@ -449,7 +449,8 @@ class TestInternalEndpoints:
         assert response.status_code == 404
         assert response.json == {
             "error": "Not Found",
-            "message": "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
+            "message": "The requested URL was not found on the server. "
+            "If you entered the URL manually please check your spelling and try again.",
         }
 
     def test_call_one_route_from_multiple(self, client):

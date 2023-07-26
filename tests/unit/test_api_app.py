@@ -1,8 +1,6 @@
 import pytest
-
+from trickster.api_app import http_error_handler
 from werkzeug.exceptions import BadRequest
-
-from trickster.api_app import http_error_handler, ApiApp
 
 
 @pytest.mark.unit
@@ -11,8 +9,6 @@ class TestHttpErrorHandler:
         with app.app_context():
             exception = BadRequest("Received invalid request.")
             response, code = http_error_handler(exception)
-            print(dir(response))
-
             assert code == 400
             assert response.get_json() == {
                 "error": "Bad Request",

@@ -1,10 +1,9 @@
-import pytest
 from pathlib import Path
 
-import flask
 from fastjsonschema.exceptions import JsonSchemaValueException
-
-from trickster.validation import request_schema, compile_json_schema, get_schema_path
+import flask
+import pytest
+from trickster.validation import compile_json_schema, get_schema_path, request_schema
 
 
 @pytest.mark.unit

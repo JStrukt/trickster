@@ -1,11 +1,9 @@
-import pytest
-
 import flask
-
+import pytest
 from trickster.routing.input import (
-    IncomingTestRequest,
-    IncomingFlaskRequest,
     HTTP_METHODS,
+    IncomingFlaskRequest,
+    IncomingTestRequest,
 )
 
 

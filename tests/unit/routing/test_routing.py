@@ -1,8 +1,6 @@
-import pytest
-
 import flask
-
-from trickster.routing import RouteConfigurationError, ResponseContext
+import pytest
+from trickster.routing import ResponseContext, RouteConfigurationError
 from trickster.routing.router import Delay, Response
 
 
@@ -25,7 +23,7 @@ class TestDelay:
 
     def test_deserialize_min_larger_than_max(self):
         with pytest.raises(RouteConfigurationError):
-            delay = Delay.deserialize([3.4, 1.2])
+            Delay.deserialize([3.4, 1.2])
 
     def test_serialize_without_arguments(self):
         delay = Delay()

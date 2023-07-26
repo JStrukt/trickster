@@ -1,21 +1,20 @@
 import re
 
 import pytest
-
 from trickster.routing import (
     DuplicateRouteError,
     MissingRouteError,
     RouteConfigurationError,
 )
 from trickster.routing.auth import NoAuth
+from trickster.routing.input import IncomingTestRequest
 from trickster.routing.router import (
     Delay,
-    RouteResponse,
     ResponseSelectionStrategy,
     Route,
     Router,
+    RouteResponse,
 )
-from trickster.routing.input import IncomingTestRequest
 
 
 @pytest.mark.unit
@@ -53,7 +52,7 @@ class TestRouteResponse:
         assert response.id == "id"
         assert response.status == 200
         assert response.weight == 0.5
-        assert response.repeat == None
+        assert response.repeat is None
         assert isinstance(response.delay, Delay)
         assert response.delay.min_delay == 0.0
         assert response.delay.max_delay == 0.0
@@ -184,7 +183,7 @@ class TestRoute:
         assert route.method == "GET"
         assert route.auth.method == "basic"
         assert route.response_selection == ResponseSelectionStrategy.random
-        assert route.is_active == True
+        assert route.is_active
 
     def test_deserialize_minimal(self):
         route = Route.deserialize(
@@ -196,11 +195,11 @@ class TestRoute:
         assert route.method == "GET"
         assert isinstance(route.auth, NoAuth)
         assert route.response_selection == ResponseSelectionStrategy.greedy
-        assert route.is_active == True
+        assert route.is_active
 
     def test_deserialize_duplicate_response_ids(self):
         with pytest.raises(RouteConfigurationError):
-            route = Route.deserialize(
+            Route.deserialize(
                 {
                     "id": "id1",
                     "path": "/endpoint_\\w*",
@@ -466,7 +465,7 @@ class TestRouter:
 
     def test_add_duplicate_route_raises_exception(self):
         router = Router()
-        route = router.add_route(
+        router.add_route(
             {
                 "id": "id1",
                 "path": "/endpoint_\\w*",
@@ -475,7 +474,7 @@ class TestRouter:
         )
 
         with pytest.raises(DuplicateRouteError):
-            route = router.add_route(
+            router.add_route(
                 {
                     "id": "id1",
                     "path": "/endpoint_\\w*",
@@ -495,13 +494,13 @@ class TestRouter:
 
         assert router.get_route("id1") is route
 
-    def test_get_route(self):
+    def test_get_route_is_none(self):
         router = Router()
         assert router.get_route("id1") is None
 
     def test_remove_route(self):
         router = Router()
-        route = router.add_route(
+        router.add_route(
             {
                 "id": "id1",
                 "path": "/endpoint_\\w*",
@@ -529,7 +528,7 @@ class TestRouter:
 
     def test_match_with_no_matching_route(self):
         router = Router()
-        route = router.add_route(
+        router.add_route(
             {
                 "id": "id1",
                 "path": "/endpoint\\w*",

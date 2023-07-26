@@ -1,10 +1,8 @@
-import time
 import hashlib
+import hmac
+import time
 
 import pytest
-import hmac
-from werkzeug.exceptions import BadRequest
-
 from trickster.routing import (
     AuthenticationError,
     Delay,
@@ -12,14 +10,14 @@ from trickster.routing import (
     RouteConfigurationError,
 )
 from trickster.routing.auth import (
-    NoAuth,
-    TokenAuth,
-    BasicAuth,
-    FormAuth,
-    CookieAuth,
-    HmacAuth,
     Auth,
     AuthWithResponse,
+    BasicAuth,
+    CookieAuth,
+    FormAuth,
+    HmacAuth,
+    NoAuth,
+    TokenAuth,
 )
 from trickster.routing.input import IncomingTestRequest
 
@@ -66,7 +64,7 @@ class TestAuthWithResponse:
 class TestNoAuth:
     def test_serialize(self):
         auth = NoAuth()
-        assert auth.serialize() == None
+        assert auth.serialize() is None
 
     def test_deserialize(self):
         auth = Auth.deserialize(None)
@@ -340,22 +338,21 @@ class TestHmacAuth:
 
     def test_authenticate(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = time.time()
+        timestamp = time.time()
         hash_maker = hmac.new("secret".encode("utf-8"), digestmod=hashlib.sha1)
-        hash_maker.update(f"/test?hmac_timestamp={ts}".encode("utf-8"))
+        hash_maker.update(f"/test?hmac_timestamp={timestamp}".encode("utf-8"))
         sign = hash_maker.hexdigest()
         request = IncomingTestRequest(
             base_url="http://localhost/",
-            full_path=f"/test?hmac_timestamp={ts}&hmac_sign={sign}",
+            full_path=f"/test?hmac_timestamp={timestamp}&hmac_sign={sign}",
             method="GET",
         )
         auth.authenticate(request)
 
     def test_missing_timestamp(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = time.time()
         hash_maker = hmac.new("secret".encode("utf-8"), digestmod=hashlib.sha1)
-        hash_maker.update(f"/test".encode("utf-8"))
+        hash_maker.update("/test".encode("utf-8"))
         sign = hash_maker.hexdigest()
         request = IncomingTestRequest(
             base_url="http://localhost/",
@@ -368,10 +365,10 @@ class TestHmacAuth:
 
     def test_missing_sign(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = time.time()
+        timestamp = time.time()
         request = IncomingTestRequest(
             base_url="http://localhost/",
-            full_path=f"/test?hmac_timestamp={ts}",
+            full_path=f"/test?hmac_timestamp={timestamp}",
             method="GET",
         )
 
@@ -380,13 +377,13 @@ class TestHmacAuth:
 
     def test_signature_in_past(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = 946684861  # 01/01/2020
+        timestamp = 946684861  # 01/01/2020
         hash_maker = hmac.new("secret".encode("utf-8"), digestmod=hashlib.sha1)
-        hash_maker.update(f"/test?hmac_timestamp={ts}".encode("utf-8"))
+        hash_maker.update(f"/test?hmac_timestamp={timestamp}".encode("utf-8"))
         sign = hash_maker.hexdigest()
         request = IncomingTestRequest(
             base_url="http://localhost/",
-            full_path=f"/test?hmac_timestamp={ts}&hmac_sign={sign}",
+            full_path=f"/test?hmac_timestamp={timestamp}&hmac_sign={sign}",
             method="GET",
         )
 
@@ -395,13 +392,13 @@ class TestHmacAuth:
 
     def test_signature_in_future(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = 13569465661  # 01/01/2400
+        timestamp = 13569465661  # 01/01/2400
         hash_maker = hmac.new("secret".encode("utf-8"), digestmod=hashlib.sha1)
-        hash_maker.update(f"/test?hmac_timestamp={ts}".encode("utf-8"))
+        hash_maker.update(f"/test?hmac_timestamp={timestamp}".encode("utf-8"))
         sign = hash_maker.hexdigest()
         request = IncomingTestRequest(
             base_url="http://localhost/",
-            full_path=f"/test?hmac_timestamp={ts}&hmac_sign={sign}",
+            full_path=f"/test?hmac_timestamp={timestamp}&hmac_sign={sign}",
             method="GET",
         )
 
@@ -410,10 +407,10 @@ class TestHmacAuth:
 
     def test_invalid_sign(self):
         auth = HmacAuth(Response("", Delay()), "secret")
-        ts = time.time()
+        timestamp = time.time()
         request = IncomingTestRequest(
             base_url="http://localhost/",
-            full_path=f"/test?hmac_timestamp={ts}&hmac_sign=invalid",
+            full_path=f"/test?hmac_timestamp={timestamp}&hmac_sign=invalid",
             method="GET",
         )
 

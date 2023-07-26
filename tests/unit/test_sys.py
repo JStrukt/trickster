@@ -1,8 +1,5 @@
-import os
-
 import pytest
-
-from trickster.sys import remove_file, multi_glob, get_env
+from trickster.sys import get_env, multi_glob, remove_file
 
 
 @pytest.mark.unit
@@ -19,9 +16,9 @@ class TestFileManipulation:
 
     def test_glob_matches_only_selected_files(self, tmpdir):
         directory = tmpdir.mkdir("test_directory")
-        file1 = directory.join("match1.file").ensure()
-        file2 = directory.join("match2.file").ensure()
-        file3 = directory.join("dont_match.file").ensure()
+        directory.join("match1.file").ensure()
+        directory.join("match2.file").ensure()
+        directory.join("dont_match.file").ensure()
 
         results = list(multi_glob(f"{directory}/match1.*", f"{directory}/match2.*"))
 

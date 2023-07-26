@@ -1,5 +1,4 @@
 import pytest
-
 from trickster.collections import IdItem, IdList
 
 

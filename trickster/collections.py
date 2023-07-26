@@ -12,10 +12,10 @@ class IdItem(abc.ABC):
 
     def serialize(self) -> Dict[str, Any]:
         """Serialize item to json."""
-        return {'id': self.id}
+        return {"id": self.id}
 
 
-IdItemType = TypeVar('IdItemType', bound=IdItem)
+IdItemType = TypeVar("IdItemType", bound=IdItem)
 
 
 class IdList(Generic[IdItemType]):

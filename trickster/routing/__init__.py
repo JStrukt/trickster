@@ -40,7 +40,7 @@ class Delay:
     def __init__(self, min_delay: float = 0.0, max_delay: float = 0.0):
         if min_delay > max_delay:
             raise RouteConfigurationError(
-                f'Minimum delay cannot be longer than maximum delay: {min_delay} > {max_delay}'
+                f"Minimum delay cannot be longer than maximum delay: {min_delay} > {max_delay}"
             )
         self.min_delay = min_delay
         self.max_delay = max_delay
@@ -80,7 +80,13 @@ class ResponseContext:
 class Response:
     """Container for predefined response."""
 
-    def __init__(self, body: Any, delay: Delay, headers: Optional[Dict[str, Any]] = None, status: int = 200) -> None:
+    def __init__(
+        self,
+        body: Any,
+        delay: Delay,
+        headers: Optional[Dict[str, Any]] = None,
+        status: int = 200,
+    ) -> None:
         self.body = body
         self.delay = delay
         self.headers = headers or {}
@@ -99,17 +105,17 @@ class Response:
         return flask.Response(
             response=self.serialize_body(context),
             status=self.status,
-            headers=self.headers
+            headers=self.headers,
         )
 
     def serialize(self) -> Dict[str, Any]:
         """Convert Response to json."""
         return {
-            'status': self.status,
-            'used_count': self.used_count,
-            'headers': self.headers,
-            'delay': self.delay.serialize(),
-            'body': self.body
+            "status": self.status,
+            "used_count": self.used_count,
+            "headers": self.headers,
+            "delay": self.delay.serialize(),
+            "body": self.body,
         }
 
     def use(self) -> None:
@@ -123,12 +129,12 @@ class Response:
     @classmethod
     def deserialize(cls: Type[ResponseType], data: Dict[str, Any]) -> ResponseType:
         """Convert json to Response."""
-        delay = Delay.deserialize(data.pop('delay', None))
+        delay = Delay.deserialize(data.pop("delay", None))
 
-        if 'headers' in data:
-            headers = data.pop('headers')
-        elif not isinstance(data['body'], str):
-            headers = {'content-type': 'application/json'}
+        if "headers" in data:
+            headers = data.pop("headers")
+        elif not isinstance(data["body"], str):
+            headers = {"content-type": "application/json"}
         else:
             headers = {}
 
@@ -136,4 +142,4 @@ class Response:
 
 
 # https://stackoverflow.com/questions/58986031/type-hinting-child-class-returning-self/58986197#58986197
-ResponseType = TypeVar('ResponseType', bound=Response)
+ResponseType = TypeVar("ResponseType", bound=Response)

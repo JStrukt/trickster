@@ -17,11 +17,13 @@ from trickster.routing.input import IncomingRequest
 class ResponseSelectionStrategy(enum.Enum):
     """Strategy of how to select a RouteResponses from list of responses."""
 
-    cycle = 'cycle'
-    random = 'random'
-    greedy = 'greedy'
+    cycle = "cycle"
+    random = "random"
+    greedy = "greedy"
 
-    def select_response_cycle(self, responses: List[RouteResponse]) -> Optional[RouteResponse]:
+    def select_response_cycle(
+        self, responses: List[RouteResponse]
+    ) -> Optional[RouteResponse]:
         """Select proper response from list of candidate responses.
 
         Consumes responses in order of definition. Cycles through items one by one.
@@ -29,11 +31,15 @@ class ResponseSelectionStrategy(enum.Enum):
         candidate = None
 
         for response in responses:
-            if response.is_active and (candidate is None or response.used_count < candidate.used_count):
+            if response.is_active and (
+                candidate is None or response.used_count < candidate.used_count
+            ):
                 candidate = response
         return candidate
 
-    def select_response_random(self, responses: List[RouteResponse]) -> Optional[RouteResponse]:
+    def select_response_random(
+        self, responses: List[RouteResponse]
+    ) -> Optional[RouteResponse]:
         """Select proper response from list of candidate responses.
 
         Selects random response from all available.
@@ -43,7 +49,9 @@ class ResponseSelectionStrategy(enum.Enum):
         result = random.choices(population=population, weights=weights, k=1)
         return result[0] if result else None
 
-    def select_response_greedy(self, responses: List[RouteResponse]) -> Optional[RouteResponse]:
+    def select_response_greedy(
+        self, responses: List[RouteResponse]
+    ) -> Optional[RouteResponse]:
         """Select proper response from list of candidate responses.
 
         Consumes responses in order of definition until the first one is exhausted,
@@ -54,9 +62,11 @@ class ResponseSelectionStrategy(enum.Enum):
                 return response
         return None
 
-    def select_response(self, responses: Iterable[RouteResponse]) -> Optional[RouteResponse]:
+    def select_response(
+        self, responses: Iterable[RouteResponse]
+    ) -> Optional[RouteResponse]:
         """Select proper response from list of candidate responses."""
-        method_name = f'select_response_{self.value}'
+        method_name = f"select_response_{self.value}"
         method = getattr(self, method_name)
         return method(responses)
 
@@ -67,7 +77,7 @@ class ResponseSelectionStrategy(enum.Enum):
     @classmethod
     def deserialize(cls, method: Optional[str] = None) -> ResponseSelectionStrategy:
         """Convert json to ResponseSelectionStrategy."""
-        return cls(method or 'greedy')
+        return cls(method or "greedy")
 
 
 class RouteResponse(Response, IdItem):
@@ -81,7 +91,7 @@ class RouteResponse(Response, IdItem):
         headers: Optional[Dict[str, Any]] = None,
         status: int = 200,
         repeat: Optional[int] = None,
-        weight: float = 0.5
+        weight: float = 0.5,
     ) -> None:
         Response.__init__(self, body, delay, headers, status)
         IdItem.__init__(self, id)
@@ -93,9 +103,9 @@ class RouteResponse(Response, IdItem):
         return {
             **Response.serialize(self),
             **IdItem.serialize(self),
-            'is_active': self.is_active,
-            'weight': self.weight,
-            'repeat': self.repeat,
+            "is_active": self.is_active,
+            "weight": self.weight,
+            "repeat": self.repeat,
         }
 
     @property
@@ -114,9 +124,9 @@ class Route(IdItem):
         response_selection: ResponseSelectionStrategy,
         path: re.Pattern,
         auth: Auth,
-        method: str = 'GET',
+        method: str = "GET",
         body: str = None,
-        body_matching_method: str = 'exact',
+        body_matching_method: str = "exact",
     ):
         super().__init__(id)
         self.response_selection = response_selection
@@ -132,21 +142,21 @@ class Route(IdItem):
             for response in responses:
                 self.responses.add(response)
         except KeyError:
-            raise DuplicateRouteError(f'Duplicate response id {response.id}.')
+            raise DuplicateRouteError(f"Duplicate response id {response.id}.")
 
     def serialize(self) -> Dict[str, Any]:
         """Convert Route to JSON."""
         return {
             **super().serialize(),
-            'response_selection': self.response_selection.serialize(),
-            'auth': self.auth.serialize(),
-            'method': self.method,
-            'path': self.path.pattern,
-            'used_count': self.used_count,
-            'responses': self.responses.serialize(),
-            'is_active': self.is_active,
-            'body': self.body,
-            'body_matching_method': self.body_matching_method,
+            "response_selection": self.response_selection.serialize(),
+            "auth": self.auth.serialize(),
+            "method": self.method,
+            "path": self.path.pattern,
+            "used_count": self.used_count,
+            "responses": self.responses.serialize(),
+            "is_active": self.is_active,
+            "body": self.body,
+            "body_matching_method": self.body_matching_method,
         }
 
     def get_response(self, response_id: str) -> Optional[RouteResponse]:
@@ -158,19 +168,21 @@ class Route(IdItem):
         """Create RouteResponse objects from json."""
         result = []
         for response in responses:
-            if 'id' not in response:
-                response['id'] = str(uuid.uuid4())
+            if "id" not in response:
+                response["id"] = str(uuid.uuid4())
             result.append(RouteResponse.deserialize(response))
         return result
 
     @classmethod
     def deserialize(cls, data: Dict[str, Any]) -> Route:
         """Convert json to Route."""
-        id = data.pop('id')
-        auth = Auth.deserialize(data.pop('auth', None))
-        path = re.compile(data.pop('path', None))
-        response_selection = ResponseSelectionStrategy.deserialize(data.pop('response_selection', None))
-        responses = cls._create_responses(data.pop('responses'))
+        id = data.pop("id")
+        auth = Auth.deserialize(data.pop("auth", None))
+        path = re.compile(data.pop("path", None))
+        response_selection = ResponseSelectionStrategy.deserialize(
+            data.pop("response_selection", None)
+        )
+        responses = cls._create_responses(data.pop("responses"))
 
         return cls(
             id=id,
@@ -178,7 +190,7 @@ class Route(IdItem):
             response_selection=response_selection,
             path=path,
             auth=auth,
-            **data
+            **data,
         )
 
     def use(self, response: RouteResponse = None) -> None:
@@ -189,12 +201,14 @@ class Route(IdItem):
 
     def match(self, request: IncomingRequest) -> bool:
         """Return True, if this request specification matches given request and Route is active."""
-        return all([
-            self._match_method(request.method),
-            self._match_path(request.path),
-            self._match_body(request.body),
-            self.is_active
-        ])
+        return all(
+            [
+                self._match_method(request.method),
+                self._match_path(request.path),
+                self._match_body(request.body),
+                self.is_active,
+            ]
+        )
 
     def _match_method(self, method: Optional[str]) -> bool:
         """Return True, if this requests HTTP method matches given InputRequest."""
@@ -210,8 +224,8 @@ class Route(IdItem):
             return True
 
         matching_methods = {
-            'exact': self._match_body_exact,
-            'regex': self._match_body_regex,
+            "exact": self._match_body_exact,
+            "regex": self._match_body_regex,
         }
 
         return matching_methods[self.body_matching_method](body)
@@ -265,7 +279,7 @@ class Router:
 
     def _set_route_id(self, route: Dict[str, Any], route_id: str = None) -> None:
         """Set route id if it doesn't already exist. Generate id if not set."""
-        route.setdefault('id', route_id or self._generate_route_id())
+        route.setdefault("id", route_id or self._generate_route_id())
 
     def add_route(self, route: Dict[str, Any]) -> Route:
         """Add custom request and matching responses."""
@@ -288,7 +302,7 @@ class Router:
     def update_route(self, route: Dict[str, Any], route_id: str) -> Route:
         """Update route with completely new data."""
         self._set_route_id(route, route_id)
-        if route_id != route['id'] and route['id'] in self.routes:
+        if route_id != route["id"] and route["id"] in self.routes:
             raise DuplicateRouteError(
                 f'Cannot change route id "{route_id}" to "{route["id"]}". Route id "{route["id"]}" already exists.'
             )
@@ -297,7 +311,9 @@ class Router:
         try:
             self.routes.replace(route_id, route_object)
         except KeyError:
-            raise MissingRouteError(f'Cannot update route "{route_id}". Route doesn\'t exist.')
+            raise MissingRouteError(
+                f'Cannot update route "{route_id}". Route doesn\'t exist.'
+            )
         return route_object
 
     def match(self, incoming_request: IncomingRequest) -> Optional[Route]:

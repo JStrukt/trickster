@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flask import Blueprint, Response, jsonify
+from flask import Blueprint, jsonify, Response
 
 
 endpoints = Blueprint("utility_api", __name__)

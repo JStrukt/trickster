@@ -7,11 +7,10 @@ import datetime
 import hashlib
 import hmac
 import re
-import urllib.parse
 from typing import Any, Dict, Iterator, Optional, Tuple, Type
+import urllib.parse
 
 import basicauth
-
 from trickster.routing import (
     AuthenticationError,
     Delay,

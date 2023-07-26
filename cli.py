@@ -3,7 +3,6 @@
 import subprocess
 
 import click
-
 from trickster.api_app import ApiApp
 from trickster.config import Config
 from trickster.sys import multi_glob, remove_file

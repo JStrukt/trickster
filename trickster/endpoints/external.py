@@ -9,10 +9,10 @@ from trickster.routing.auth import AuthenticationError
 from trickster.routing.input import HTTP_METHODS, IncomingFlaskRequest
 
 
-endpoints = Blueprint('external_api', __name__)
+endpoints = Blueprint("external_api", __name__)
 
 
-@endpoints.route('/<path:path>', methods=HTTP_METHODS)
+@endpoints.route("/<path:path>", methods=HTTP_METHODS)
 def respond(path: str) -> Response:
     """Match request againts defined routes and return appropriet response."""
     incomming_request = IncomingFlaskRequest(request)

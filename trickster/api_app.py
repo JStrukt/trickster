@@ -15,10 +15,7 @@ from werkzeug.exceptions import HTTPException
 
 def http_error_handler(error: HTTPException) -> Tuple[Any, Optional[int]]:
     """Handler for error pages."""
-    return jsonify({
-        'error': error.name,
-        'message': error.description
-    }), error.code
+    return jsonify({"error": error.name, "message": error.description}), error.code
 
 
 class ApiApp(Flask):
@@ -34,7 +31,7 @@ class ApiApp(Flask):
 
     def load_routes(self) -> None:
         """Load configured default routes."""
-        self.user_router.reset(self.config['DEFAULT_ROUTES'])
+        self.user_router.reset(self.config["DEFAULT_ROUTES"])
 
     def _register_handlers(self) -> None:
         """Register error page handlers."""
@@ -42,9 +39,13 @@ class ApiApp(Flask):
 
     def _register_blueprints(self) -> None:
         """Register api endpoints."""
-        self.register_blueprint(internal.endpoints, url_prefix=self.config['INTERNAL_PREFIX'])
-        self.register_blueprint(utility.endpoints, url_prefix=self.config['INTERNAL_PREFIX'])
-        self.register_blueprint(external.endpoints, url_prefix='')
+        self.register_blueprint(
+            internal.endpoints, url_prefix=self.config["INTERNAL_PREFIX"]
+        )
+        self.register_blueprint(
+            utility.endpoints, url_prefix=self.config["INTERNAL_PREFIX"]
+        )
+        self.register_blueprint(external.endpoints, url_prefix="")
 
     def run(self) -> None:  # type: ignore # pragma: no cover
         """Start app.
@@ -56,4 +57,4 @@ class ApiApp(Flask):
 
         To change the configuration of the app, use `trickster.config.Config`.
         """
-        super().run(port=self.config['PORT'])
+        super().run(port=self.config["PORT"])

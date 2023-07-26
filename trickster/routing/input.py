@@ -10,15 +10,15 @@ import flask
 
 
 HTTP_METHODS = [
-    'GET',
-    'HEAD',
-    'POST',
-    'PUT',
-    'DELETE',
-    'CONNECT',
-    'OPTIONS',
-    'TRACE',
-    'PATCH'
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "DELETE",
+    "CONNECT",
+    "OPTIONS",
+    "TRACE",
+    "PATCH",
 ]
 
 
@@ -105,7 +105,7 @@ class IncomingFlaskRequest(IncomingRequest):
     @property
     def query_string(self) -> str:
         """Query string of the request: `http://domain.com/path?<query>`."""
-        return self.request.query_string.decode('utf-8')
+        return self.request.query_string.decode("utf-8")
 
     @property
     def form(self) -> Dict[str, Any]:
@@ -120,7 +120,7 @@ class IncomingFlaskRequest(IncomingRequest):
     @property
     def body(self) -> str:
         """Body of the request."""
-        return self.request.data.decode('utf-8')
+        return self.request.data.decode("utf-8")
 
 
 class IncomingTestRequest:
@@ -134,7 +134,7 @@ class IncomingTestRequest:
         headers: Dict[str, str] = None,
         form: Dict[str, str] = None,
         cookies: Dict[str, str] = None,
-        body: str = ''
+        body: str = "",
     ):
         self.url = urllib.parse.urljoin(base_url, full_path)
         self.parsed_url = urllib.parse.urlparse(self.url)

@@ -10,7 +10,7 @@ import fastjsonschema
 import flask
 
 
-schemas_path = pathlib.Path(__file__).parent / 'schemas'
+schemas_path = pathlib.Path(__file__).parent / "schemas"
 
 
 def request_schema(schema_name: str) -> Callable:
@@ -19,6 +19,7 @@ def request_schema(schema_name: str) -> Callable:
     `request_schema` can be used only as a flask endpoint decorator. Must be
     called within request scope.
     """
+
     def request_schema_decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def request_schema_wrapper(*args: List[Any], **kwargs: Dict[str, Any]) -> Any:
@@ -28,7 +29,9 @@ def request_schema(schema_name: str) -> Callable:
                 return func(*args, **kwargs)
             except fastjsonschema.JsonSchemaException as e:
                 flask.abort(400, e.message)
+
         return request_schema_wrapper
+
     return request_schema_decorator
 
 

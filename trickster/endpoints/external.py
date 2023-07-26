@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from flask import Blueprint, Response, abort, current_app, request
-
+from flask import abort, Blueprint, current_app, request, Response
 from trickster.routing import ResponseContext
 from trickster.routing.auth import AuthenticationError
 from trickster.routing.input import HTTP_METHODS, IncomingFlaskRequest

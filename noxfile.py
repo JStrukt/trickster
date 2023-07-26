@@ -1,14 +1,17 @@
-from nox_poetry import session, Session
+from pathlib import Path
 
+from nox_poetry import Session, session
+
+HERE = Path(__file__).parent
 
 LOCATIONS = [
-    "tests",
-    "trickster",
-    "app.py",
-    "cli.py",
-    "gunicorn.conf.py",
-    "noxfile.py",
-    "setup.py",
+    HERE / "tests",
+    HERE / "trickster",
+    HERE / "app.py",
+    HERE / "cli.py",
+    HERE / "gunicorn.conf.py",
+    HERE / "noxfile.py",
+    HERE / "setup.py",
 ]
 
 
@@ -18,16 +21,19 @@ def test(session: Session) -> None:
     session.run("pytest")
 
 
-@session
-def lint(session: Session) -> None:
-    args = session.posargs or LOCATIONS
-    session.install("flake8")
-    # session.run("flake8", "--import-order-style", "google")
-    session.run("flake8", *args)
-
-
-@session
+@session(python=["3.8"])
 def black(session: Session) -> None:
     args = session.posargs or LOCATIONS
+    args = [str(arg) for arg in args]
     session.install("black")
     session.run("black", *args)
+
+
+@session(python=["3.8"])
+def lint(session: Session) -> None:
+    args = session.posargs or LOCATIONS
+    args = [str(arg) for arg in args]
+    session.install("flake8")
+    session.install("flake8-import-order")
+    # session.run("flake8", "--import-order-style", "google")
+    session.run("flake8", "--import-order-style", "google", *args)

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import abc
-import urllib.parse
 from typing import Any, Dict
+import urllib.parse
 
 import flask
 

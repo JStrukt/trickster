@@ -6,7 +6,6 @@ import pathlib
 from typing import Any, Callable, Dict, List
 
 import fastjsonschema
-
 import flask
 
 

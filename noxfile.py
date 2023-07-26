@@ -12,3 +12,9 @@ def lint(session: Session) -> None:
     session.install("flake8")
     # session.run("flake8", "--import-order-style", "google")
     session.run("flake8")
+
+
+@session
+def black(session: Session) -> None:
+    session.install("black")
+    session.run("black", ".")

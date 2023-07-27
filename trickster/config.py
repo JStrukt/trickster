@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from trickster.sys import get_env
-from trickster.validation import validate_json
+from trickster.validation import get_validator
 
 
 class Config:
@@ -74,5 +74,6 @@ class Config:
 
     def _validate_routes(self, routes: List[Dict[str, Any]]) -> None:
         """Validate default routes."""
+        validate = get_validator("route.schema.json")
         for route in routes:
-            validate_json(route, "route.schema.json")
+            validate(route)

@@ -1,22 +1,20 @@
-from pathlib import Path
-
 from fastjsonschema.exceptions import JsonSchemaValueException
 import flask
 import pytest
-from trickster.validation import compile_json_schema, get_schema_path, request_schema
+from trickster.validation import get_validator, request_schema
 
 
 @pytest.mark.unit
 class TestJsonSchemaValidation:
     def test_schema_path_returns_absolute_path(self):
-        path = get_schema_path("route.schema.json")
+        path = get_validator("route.schema.json").path
         assert path.name == "route.schema.json"
         assert path.is_absolute
         assert path.exists()
 
     def test_compiled_json_schema_is_cached(self):
-        validator1 = compile_json_schema(get_schema_path("route.schema.json"))
-        validator2 = compile_json_schema(get_schema_path("route.schema.json"))
+        validator1 = get_validator("route.schema.json").compiled
+        validator2 = get_validator("route.schema.json").compiled
         assert validator1 is validator2
 
     def test_compile_valid_json_schema(self, tmpdir):
@@ -29,8 +27,8 @@ class TestJsonSchemaValidation:
             "required": ["property"]
         }"""
         )
-        validator = compile_json_schema(Path(schema))
-        validator({"property": 2})
+        validate = get_validator("test.schema.json", base_dir=tmpdir).compiled
+        validate({"property": 2})
 
     def test_compile_invalid_json_schema(self, tmpdir):
         schema = tmpdir.join("test.schema.json")
@@ -42,9 +40,9 @@ class TestJsonSchemaValidation:
             "required": ["property"]
         }"""
         )
-        validator = compile_json_schema(Path(schema))
+        validate = get_validator("test.schema.json", base_dir=tmpdir).compiled
         with pytest.raises(JsonSchemaValueException):
-            validator({"property": "string"})
+            validate({"property": "string"})
 
     def test_valid_schema_decorator(self):
         app = flask.Flask(__name__)
